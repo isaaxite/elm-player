@@ -63,7 +63,7 @@ async function main() {
     updateByMediaIdx(prevIdx);
   });
   await window.electronAPI.onNextMedia(() => {
-    const nextIdx = store.curMediaIdx < files.length - 1 ? store.curMediaIdx + 1 : files.length - 1;
+    const nextIdx = store.curMediaIdx < store.files.length - 1 ? store.curMediaIdx + 1 : files.length - 1;
     updateByMediaIdx(nextIdx);
   });
   await window.electronAPI.onSwitchPlaylist(togglePlaylist);
