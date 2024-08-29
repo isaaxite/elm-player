@@ -9,8 +9,8 @@
     "checkJs": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "jsx": "react"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/renderer/index.tsx"],
   "exclude": ["node_modules", "dist"]
 }
