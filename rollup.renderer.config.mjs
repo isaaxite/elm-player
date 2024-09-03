@@ -5,7 +5,7 @@ import replace from '@rollup/plugin-replace';
 
 export default {
 	input: {
-    'renderer': 'src/renderer/index.tsx',
+    'renderer': 'src/renderer/index.ts',
   },
 	output: {
     dir: 'dist/',

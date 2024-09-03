@@ -104,7 +104,7 @@ async function main() {
   await window.electronAPI.onSwitchPlaylist(togglePlaylist);
   await window.electronAPI.onSelectedDirectory(updatePlaylist);
 
-  createRoot(document.getElementById('app') as HTMLElement).render(<App/>);
+  createRoot(document.getElementById('app') as HTMLElement).render(React.createElement(App));
 }
 
 main();

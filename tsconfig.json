@@ -12,6 +12,6 @@
     "jsx": "react",
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/renderer/index.tsx"],
+  "include": ["src/**/*.ts", "src/renderer/index.ts"],
   "exclude": ["node_modules", "dist"]
 }
