@@ -9,7 +9,8 @@
     "checkJs": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "jsx": "react"
+    "jsx": "react",
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "src/renderer/index.tsx"],
   "exclude": ["node_modules", "dist"]
