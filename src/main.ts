@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path"
 import { app, BrowserWindow, ipcMain, Menu, dialog } from "electron";
-import { FileList } from "./types.ts";
+import { FileList } from "./types";
 
 function getLocalFiles(directory: string): Promise<FileList[]> {
   return new Promise((resolve, reject) => {

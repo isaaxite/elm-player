@@ -1,4 +1,7 @@
-import { FileList } from "./types.ts";
+import React from 'react';
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import { FileList } from "../types";
 
 interface Store {
   files: FileList[];
@@ -100,6 +103,8 @@ async function main() {
   });
   await window.electronAPI.onSwitchPlaylist(togglePlaylist);
   await window.electronAPI.onSelectedDirectory(updatePlaylist);
+
+  createRoot(document.getElementById('app') as HTMLElement).render(<App/>);
 }
 
 main();
