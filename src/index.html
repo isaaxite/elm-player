@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';media-src 'self'; style-src 'self' 'unsafe-inline';font-src 'self' data:;">
     <link rel="stylesheet" href="./index.css">
+    <!-- <link href="./assets/video-js.min.css" rel="stylesheet" /> -->
     <title>electron media player</title>
   </head>
   <body>
@@ -16,6 +18,7 @@
       <div id="fileList" class="playlist hide-playlist"></div>
     </div> -->
     <div id="app"></div>
+    <!-- <script crossorigin="anonymous" src="./assets/video.min.js"></script> -->
     <script src="./renderer.js"></script>
     <!-- <script src="./home.js"></script> -->
   </body>
