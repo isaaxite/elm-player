@@ -5,6 +5,7 @@ import 'video.js/dist/video-js.css';
 import 'videojs-playlist';
 import 'videojs-playlist-ui';
 import 'videojs-playlist-ui/dist/videojs-playlist-ui.css';
+import './VideoJS.scss';
 
 interface VideoSource {
   src: string;
@@ -37,7 +38,7 @@ export const VideoJS = (props: VideoJSProps) => {
   const initPlayer = () => {
     const videoElement = document.createElement("video-js");
 
-    videoElement.classList.add('vjs-big-play-centered');
+    videoElement.classList.add('elm-vjs__video-wraper');
     videoRef.current!.appendChild(videoElement);
     
     const player = videojs(videoElement, options, () => {
@@ -75,8 +76,8 @@ export const VideoJS = (props: VideoJSProps) => {
 
   return (
     <>
-      <div data-vjs-player>
-        <div className='test' ref={videoRef} />
+      <div className='elm-vjs' data-vjs-player>
+        <div className='elm-vjs__wraper' ref={videoRef} />
       </div>
       <div ref={playlistNode} className="vjs-playlist" />
     </>

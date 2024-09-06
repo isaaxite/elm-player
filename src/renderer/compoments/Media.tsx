@@ -1,6 +1,7 @@
 import React from 'react';
 import VideoJS from './VideoJS';
 import { VideoJsPlayer } from 'video.js';
+import './Media.scss';
 
 
 const Media  = () => {

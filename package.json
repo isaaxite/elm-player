@@ -45,6 +45,7 @@
     "postcss": "^8.4.44",
     "rollup": "3.29.4",
     "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.78.0",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4"
   },

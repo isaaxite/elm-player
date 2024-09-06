@@ -24,6 +24,8 @@ export default {
     }),
     postcss({
       inject: true, // This will extract the CSS into a separate file
+      extensions: ['.scss', '.css'],
+      use: ['sass']
     }),
     commonjs(),
     babel({
