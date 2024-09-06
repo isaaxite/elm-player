@@ -31,6 +31,8 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js')
     }
   });
+
+  // win.setFullScreen(true);
   
   
   win.webContents.openDevTools()

@@ -10,12 +10,31 @@ const Media  = () => {
     autoplay: true,
     controls: true,
     responsive: true,
-    fluid: true,
+    // fluid: true,
     sources: [{
       src: 'file:///home/isaac/Workspace/elm-player/dist/assets/oceans.mp4',
       type: 'video/mp4'
     }]
   };
+
+  const videoList = [
+    {
+      name: 'oceans',
+      sources: [{
+        src: 'file:///home/isaac/Workspace/elm-player/dist/assets/oceans.mp4',
+        type: 'video/mp4'
+      }],
+      poster: 'file:///home/isaac/Workspace/elm-player/dist/assets/sintel_poster.png'
+    },
+    {
+      name: 'trailer',
+      sources: [{
+        src: 'file:///home/isaac/Workspace/elm-player/dist/assets/trailer.mp4',
+        type: 'video/mp4'
+      }],
+      poster: 'file:///home/isaac/Workspace/elm-player/dist/assets/bunny_poster.png'
+    }
+  ];
 
   const handlePlayerReady = (player: VideoJsPlayer) => {
     playerRef.current = player;
@@ -31,7 +50,11 @@ const Media  = () => {
   };
 
   return (
-    <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+    <VideoJS
+      options={videoJsOptions}
+      videoList={videoList}
+      onReady={handlePlayerReady}
+    />
   );
 };
 

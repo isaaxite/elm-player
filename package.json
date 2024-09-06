@@ -52,6 +52,8 @@
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "video.js": "^8.17.3"
+    "video.js": "^8.17.3",
+    "videojs-playlist": "^5.1.2",
+    "videojs-playlist-ui": "^5.0.0"
   }
 }

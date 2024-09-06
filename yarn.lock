@@ -3044,7 +3044,7 @@ global-prefix@^1.0.1:
     is-windows "^1.0.1"
     which "^1.2.14"
 
-global@4.4.0, global@^4.3.1, global@^4.4.0, global@~4.4.0:
+global@4.4.0, global@^4.3.1, global@^4.3.2, global@^4.4.0, global@~4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/global/-/global-4.4.0.tgz#3e7b105179006a323ed71aafca3e9c57a5cc6406"
   integrity sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==
@@ -5262,7 +5262,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-"video.js@^7 || ^8", video.js@^8.17.3:
+"video.js@^6 || ^7 || ^8", "video.js@^7 || ^8", video.js@^8.17.3:
   version "8.17.3"
   resolved "https://registry.yarnpkg.com/video.js/-/video.js-8.17.3.tgz#678f8d52121608e05bdacfe5993889adbf2022e8"
   integrity sha512-zhhmE0LNxJRA603/48oYzF7GYdT+rQRscvcsouYxFE71aKhalHLBP6S9/XjixnyjcrYgwIx8OQo6eSjcbbAW0Q==
@@ -5292,6 +5292,21 @@ videojs-font@4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/videojs-font/-/videojs-font-4.2.0.tgz#fbce803d347c565816e296f527e208dc65c9f235"
   integrity sha512-YPq+wiKoGy2/M7ccjmlvwi58z2xsykkkfNMyIg4xb7EZQQNwB71hcSsB3o75CqQV7/y5lXkXhI/rsGAS7jfEmQ==
+
+videojs-playlist-ui@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/videojs-playlist-ui/-/videojs-playlist-ui-5.0.0.tgz#e1588e5a83ef3f8a37954ae79b7c7ada6de8a72e"
+  integrity sha512-Ct6uzWO7FittnXqWU0mnF+ahE1IYvXYVTu5O1qGPW5BkUdW+j0b+wwbiQp3Wj49MXB2A/gKfgIpm4QFVRKq8kw==
+  dependencies:
+    global "^4.4.0"
+
+videojs-playlist@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/videojs-playlist/-/videojs-playlist-5.1.2.tgz#2118ab44cfddebc6da3f4cd0a9502350e9c3bcb5"
+  integrity sha512-8YgNq/iL17RLTXpfWAkuhM0Sq4w/x5YPVaNbUycjfqqGL/bp3Nrmc2W0qkPfh0ryB7r4cHfJbtHYP7zlW3ZkdQ==
+  dependencies:
+    global "^4.3.2"
+    video.js "^6 || ^7 || ^8"
 
 videojs-vtt.js@0.15.5:
   version "0.15.5"
