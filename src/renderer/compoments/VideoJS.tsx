@@ -1,4 +1,6 @@
 import React, { useRef, useEffect } from 'react';
+import { createRoot } from 'react-dom/client'
+import Playlist from './Playlist';
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
 import 'video.js/dist/video-js.css';
 // import * as playlist from 'videojs-playlist';
@@ -34,6 +36,16 @@ export const VideoJS = (props: VideoJSProps) => {
 
   const playlistNode = useRef(null);
 
+  const renderPlaylist = (playerCuttent: VideoJsPlayer) => {
+    const playlistWraper = document.createElement('div');
+    playlistWraper.id = 'elm-playlist';
+    playerCuttent.el().appendChild(playlistWraper);
+
+    createRoot(document.getElementById(playlistWraper.id) as HTMLDivElement).render(
+      <Playlist videoList={videoList} />
+    );
+  }
+
 
   const initPlayer = () => {
     const videoElement = document.createElement("video-js");
@@ -43,6 +55,8 @@ export const VideoJS = (props: VideoJSProps) => {
     
     const player = videojs(videoElement, options, () => {
       console.log('player is ready');
+
+      renderPlaylist(player);
       onReady && onReady(player);
     });
 
@@ -55,9 +69,8 @@ export const VideoJS = (props: VideoJSProps) => {
     }
 
     if (playerRef.current && videoList) {
-      console.info(123)
       playerRef.current.playlist(videoList);
-      playerRef.current.playlistUi(playlistNode.current);
+      // playerRef.current.playlistUi(playlistNode.current);
       // playerRef.current.videoList.autoadvance(0); // 自动播放下一个视频
     }
   }, [videoList]);

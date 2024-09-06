@@ -11,11 +11,15 @@ const Media  = () => {
     autoplay: true,
     controls: true,
     responsive: true,
-    // fluid: true,
-    sources: [{
-      src: 'file:///home/isaac/Workspace/elm-player/dist/assets/oceans.mp4',
-      type: 'video/mp4'
-    }]
+    controlBar: {
+      skipButtons: {
+        forward: 5,
+        backward: 5
+      }
+    },
+    disablePictureInPicture: true,
+    experimentalSvgIcons: true,
+    preferFullWindow: true,
   };
 
   const videoList = [

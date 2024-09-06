@@ -1,0 +1,24 @@
+#elm-playlist {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(43, 51, 63, 0.7);
+  padding-bottom: 3em;
+}
+
+.elm-playlist {
+  &__container {
+    height: 100%;
+  }
+
+  &__item {
+    padding-top: 50px;
+    padding-left: 15px;
+    padding-right: 10px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+}
