@@ -5,8 +5,8 @@ import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
 import 'video.js/dist/video-js.css';
 // import * as playlist from 'videojs-playlist';
 import 'videojs-playlist';
-import 'videojs-playlist-ui';
-import 'videojs-playlist-ui/dist/videojs-playlist-ui.css';
+// import 'videojs-playlist-ui';
+// import 'videojs-playlist-ui/dist/videojs-playlist-ui.css';
 import './VideoJS.scss';
 
 interface VideoSource {
@@ -36,13 +36,24 @@ export const VideoJS = (props: VideoJSProps) => {
 
   const playlistNode = useRef(null);
 
+  // todo
+  const handleKeyupSwitchMidea = () => {}
+  const handleDoubleClickListItem = (playerCuttent: VideoJsPlayer, videoInfo: VideoInfo, idx: number) => {
+    console.info({
+      videoInfo, idx
+    })
+
+    playerCuttent.playlist.currentItem(idx);
+  };
   const renderPlaylist = (playerCuttent: VideoJsPlayer) => {
     const playlistWraper = document.createElement('div');
     playlistWraper.id = 'elm-playlist';
     playerCuttent.el().appendChild(playlistWraper);
 
     createRoot(document.getElementById(playlistWraper.id) as HTMLDivElement).render(
-      <Playlist videoList={videoList} />
+      <Playlist onDoubleClickListItem={(e, videoInfo, idx) => {
+        handleDoubleClickListItem(playerCuttent, videoInfo, idx);
+      }} videoList={videoList} />
     );
   }
 

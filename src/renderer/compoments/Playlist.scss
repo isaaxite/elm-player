@@ -13,12 +13,21 @@
   }
 
   &__item {
-    padding-top: 50px;
-    padding-left: 15px;
-    padding-right: 10px;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    padding-right: 5px;
     color: white;
     font-size: 14px;
     cursor: pointer;
     user-select: none;
+
+    &:hover, &--selected {
+      background-color: rgba(43, 51, 63, 1);
+      box-shadow: 0 0 4px 3px rgba(254, 254, 254, 0.6);
+    }
   }
 }

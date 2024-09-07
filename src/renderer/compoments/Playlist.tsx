@@ -13,10 +13,20 @@ export interface VideoInfo {
   poster: string;
 }
 
-const Playlist = (props: { videoList: Array<VideoInfo>; }) => {
-  const scrollContainerRef: React.MutableRefObject<null | HTMLUListElement> = useRef(null);
+interface PlaylistProps {
+  videoList: Array<VideoInfo>;
+  onDoubleClickListItem?: (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>, 
+    videoInfo: VideoInfo, 
+    idx: number
+  ) => void;
+};
+
+const Playlist = (props: PlaylistProps) => {
+  const scrollContainerRef: React.MutableRefObject<null | HTMLDivElement> = useRef(null);
   const {
-    videoList
+    videoList,
+    onDoubleClickListItem,
   } = props;
 
 
@@ -28,27 +38,25 @@ const Playlist = (props: { videoList: Array<VideoInfo>; }) => {
     const ps = new PerfectScrollbar(scrollContainerRef.current!);
   }, [scrollContainerRef]);
 
+  const handleDoubleClickListItem = (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    videoInfo: VideoInfo,
+    idx: number
+  ) => {
+    // console.info(event.)
+    if (onDoubleClickListItem) {
+      onDoubleClickListItem(e, videoInfo, idx);
+    }
+  };
+
+  const genListItemEle = (videoInfo: VideoInfo, idx: number) => {
+    return (<li onDoubleClick={(e) => handleDoubleClickListItem(e, videoInfo, idx)} className='elm-playlist__item'>{idx} {videoInfo.sources[0].src}</li>)
+  };
+
   return (
     <div className='elm-playlist__container' ref={scrollContainerRef} data-mdb-perfect-scrollbar='true'>
       <ul>
-        {[
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-          ...videoList,
-        ].map((videoInfo, idx) => {
-          return (<li className='elm-playlist__item'>{idx} {videoInfo.sources[0].src}</li>)
-        })}
+        {videoList.map(genListItemEle)}
       </ul>
     </div>
   );
