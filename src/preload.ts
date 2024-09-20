@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { VideoFileSummaryInfoList } from "./utils/readLocalMediaFiles";
 
 function ipcRendererHandlerFactory(eventNmae: string) {
   return (handler: () => void) => {
@@ -25,5 +26,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.on('selected-directory', (e, dirPath) => {
       handler(dirPath);
     })
-  }
+  },
+  getVideoFileSummaryInfoList: (directory: string): Promise<VideoFileSummaryInfoList> => ipcRenderer.invoke('get-video-file-tiny-tree', directory),
 });

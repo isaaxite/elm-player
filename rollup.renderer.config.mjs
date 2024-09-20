@@ -14,7 +14,9 @@ export default {
   },
   plugins: [
     replace({
-      'process.env.NODE_ENV': JSON.stringify('production'), // 自定义环境变量
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV === 'development' ? 'development' : 'production'
+      ), // 自定义环境变量
       preventAssignment: true, // 确保替换在编译时完成
     }),
     resolve({

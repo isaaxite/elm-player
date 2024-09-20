@@ -1,15 +1,32 @@
 #elm-playlist {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(43, 51, 63, 0.7);
+  position: relative;
+  // top: 0;
+  // right: 0;
+  // bottom: 0;
   padding-bottom: 3em;
+  // width: 100%;
 }
 
 .elm-playlist {
   &__container {
     height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    background-color: rgba(43, 51, 63, 0.9);
+    box-shadow: 0 0 4px 1px rgba(255, 255, 255, 1);
+  }
+
+  &__mask {
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: calc(100vh - 3em);
+  }
+
+  &--hide {
+    display: none;
   }
 
   &__item {
@@ -20,14 +37,31 @@
     padding-bottom: 6px;
     padding-left: 10px;
     padding-right: 5px;
-    color: white;
     font-size: 14px;
     cursor: pointer;
     user-select: none;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 2px;
 
-    &:hover, &--selected {
+    &:hover {
       background-color: rgba(43, 51, 63, 1);
-      box-shadow: 0 0 4px 3px rgba(254, 254, 254, 0.6);
+      box-shadow: 0 0 2px 2px rgba(254, 254, 254, 0.6);
+    }
+
+    &--selected {
+      background-color: rgba(43, 51, 63, 1);
+      box-shadow: 0 0 2px 1px rgba(254, 254, 254, 0.6);
+    }
+
+    &-tag {
+      color: gray;
+    }
+
+    &-title {
+      color: rgb(254, 254, 254);
     }
   }
 }

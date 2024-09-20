@@ -8,6 +8,7 @@ import 'videojs-playlist';
 // import 'videojs-playlist-ui';
 // import 'videojs-playlist-ui/dist/videojs-playlist-ui.css';
 import './VideoJS.scss';
+import { usePlayListStore } from '../store';
 
 interface VideoSource {
   src: string;
@@ -34,29 +35,12 @@ export const VideoJS = (props: VideoJSProps) => {
     videoList,
   }: VideoJSProps = props;
 
+  const [showPlaylist, togglePlaylist] = usePlayListStore(s => [
+    s.showPlaylist,
+    s.togglePlaylist,
+  ]);
+
   const playlistNode = useRef(null);
-
-  // todo
-  const handleKeyupSwitchMidea = () => {}
-  const handleDoubleClickListItem = (playerCuttent: VideoJsPlayer, videoInfo: VideoInfo, idx: number) => {
-    console.info({
-      videoInfo, idx
-    })
-
-    playerCuttent.playlist.currentItem(idx);
-  };
-  const renderPlaylist = (playerCuttent: VideoJsPlayer) => {
-    const playlistWraper = document.createElement('div');
-    playlistWraper.id = 'elm-playlist';
-    playerCuttent.el().appendChild(playlistWraper);
-
-    createRoot(document.getElementById(playlistWraper.id) as HTMLDivElement).render(
-      <Playlist onDoubleClickListItem={(e, videoInfo, idx) => {
-        handleDoubleClickListItem(playerCuttent, videoInfo, idx);
-      }} videoList={videoList} />
-    );
-  }
-
 
   const initPlayer = () => {
     const videoElement = document.createElement("video-js");
@@ -67,27 +51,19 @@ export const VideoJS = (props: VideoJSProps) => {
     const player = videojs(videoElement, options, () => {
       console.log('player is ready');
 
-      renderPlaylist(player);
+      // renderPlaylist(player);
       onReady && onReady(player);
     });
 
     return player;
   };
 
+  // Dispose the Video.js player when the functional component unmounts
   useEffect(() => {
     if (!playerRef.current) {
       playerRef.current = initPlayer();
     }
 
-    if (playerRef.current && videoList) {
-      playerRef.current.playlist(videoList);
-      // playerRef.current.playlistUi(playlistNode.current);
-      // playerRef.current.videoList.autoadvance(0); // 自动播放下一个视频
-    }
-  }, [videoList]);
-
-  // Dispose the Video.js player when the functional component unmounts
-  useEffect(() => {
     const player = playerRef.current;
 
     return () => {

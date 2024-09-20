@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 
 export default {
 	input: {
+    'temp': 'temp.ts',
     'main': 'src/main.ts',
     'preload': 'src/preload.ts',
   },

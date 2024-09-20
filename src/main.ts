@@ -1,7 +1,8 @@
-import * as fs from "fs";
-import * as path from "path"
+import fs from "fs";
+import path from "path"
 import { app, BrowserWindow, ipcMain, Menu, dialog } from "electron";
 import { FileList } from "./types";
+import { getVideoFilesTinyTree } from "./utils/readLocalMediaFiles";
 
 function getLocalFiles(directory: string): Promise<FileList[]> {
   return new Promise((resolve, reject) => {
@@ -84,6 +85,10 @@ const createWindow = () => {
       console.error(error);
       throw error;
     }
+  });
+
+  ipcMain.handle('get-video-file-tiny-tree', async (e, directory) => {
+    return getVideoFilesTinyTree(directory);
   });
 };
 
