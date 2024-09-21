@@ -81,7 +81,7 @@ function togglePlaylist() {
   const playlistTag = document.getElementById('fileList');
   // todo
   if (!playlistTag) {
-    throw new Error();
+    throw new Error(`document.getElementById('fileList') not exist!`);
   }
   if (store.showPlaylist) {
     playlistTag.classList.add('hide-playlist');
@@ -93,16 +93,14 @@ function togglePlaylist() {
 }
 
 async function main() {
-  await window.electronAPI.onPrevMedia(() => {
+  window.electronAPI.onPrevMedia(() => {
     const prevIdx = store.curMediaIdx > 0 ? store.curMediaIdx - 1 : 0;
     updateByMediaIdx(prevIdx);
   });
-  await window.electronAPI.onNextMedia(() => {
+  window.electronAPI.onNextMedia(() => {
     const nextIdx = store.curMediaIdx < store.files.length - 1 ? store.curMediaIdx + 1 : store.files.length - 1;
     updateByMediaIdx(nextIdx);
   });
-  await window.electronAPI.onSwitchPlaylist(togglePlaylist);
-  await window.electronAPI.onSelectedDirectory(updatePlaylist);
 
   createRoot(document.getElementById('app') as HTMLElement).render(React.createElement(App));
 }

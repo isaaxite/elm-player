@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ESNext",
     "module": "ESNext",
     "strict": true,
@@ -10,7 +11,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "video.js": ["./node_modules/@types/video.js"]
+    }
   },
   "include": ["src/**/*.ts", "src/renderer/index.ts"],
   "exclude": ["node_modules", "dist"]

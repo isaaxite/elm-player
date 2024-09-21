@@ -6,7 +6,7 @@
   "author": "isaaxite",
   "license": "MIT",
   "scripts": {
-    "move-nonbuild-files": "cp src/*.html src/*.css dist",
+    "move-nonbuild-files": "cp src/*.html src/*.css dist && cp -r src/assets dist",
     "clean": "rm -rf ./dist",
     "build-core": "babel src --out-dir dist --extensions \".ts\"",
     "build-react": "rollup -c ./rollup.config.mjs",
@@ -15,7 +15,8 @@
     "build-main": "rollup -c ./rollup.main.config.mjs",
     "clean-build-main": "rm -rf ./dist && npm run build-main",
     "build": "npm run clean && npm run build-react && npm run move-nonbuild-files",
-    "start": "npm run build && electron-forge start dist",
+    "pure-start": "electron-forge start dist",
+    "start": "export NODE_ENV=development && npm run build && npm run pure-start",
     "package": "npm run build && electron-forge package dist",
     "make": "npm run build && electron-forge make dist"
   },
@@ -33,20 +34,33 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
+    "@redux-devtools/extension": "^3.3.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
+    "@types/fluent-ffmpeg": "^2.1.26",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
+    "@types/video.js": "^7.3.58",
     "electron": "^32.0.1",
+    "postcss": "^8.4.44",
     "rollup": "3.29.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.78.0",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
+    "fluent-ffmpeg": "2.1.2",
+    "perfect-scrollbar": "^1.5.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "reset-css": "^5.0.2",
+    "video.js": "^8.17.3",
+    "videojs-playlist": "^5.1.2",
+    "videojs-playlist-ui": "^5.0.0",
+    "zustand": "^4.5.5"
   }
 }

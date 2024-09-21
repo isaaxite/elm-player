@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
+import postcss from 'rollup-plugin-postcss';
 
 export default {
 	input: {
@@ -10,14 +11,23 @@ export default {
 	output: {
     dir: 'dist/',
 		format: 'iife'
-	},
+  },
   plugins: [
     replace({
-      'process.env.NODE_ENV': JSON.stringify('production'), // 自定义环境变量
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV === 'development' ? 'development' : 'production'
+      ), // 自定义环境变量
       preventAssignment: true, // 确保替换在编译时完成
     }),
     resolve({
-      extensions: ['.ts', '.tsx'] // 支持这些扩展名的文件解析
+      browser: true,
+      preferBuiltins: false, // 对于浏览器环境，设置为 false
+      extensions: ['.ts', '.tsx', '.js'] // 支持这些扩展名的文件解析
+    }),
+    postcss({
+      inject: true, // This will extract the CSS into a separate file
+      extensions: ['.scss', '.css'],
+      use: ['sass']
     }),
     commonjs(),
     babel({
