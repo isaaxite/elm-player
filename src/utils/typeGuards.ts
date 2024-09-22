@@ -1,5 +1,5 @@
-import { VideoFileSummaryInfoListItem, TinyDirItem } from "../types";
+import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from "../types";
 
-export function isTinyDirItem(item: VideoFileSummaryInfoListItem): item is TinyDirItem {
-  return Object.keys(item as TinyDirItem).includes('directory');
+export function isTinyDirItem(item: VideoFileSummaryInfoTreeDirNode | VideoFileTreeSummaryInfoFileNode): item is VideoFileSummaryInfoTreeDirNode {
+  return Object.keys(item as VideoFileSummaryInfoTreeDirNode).includes('directory');
 }

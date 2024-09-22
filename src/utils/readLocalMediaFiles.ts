@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
+import { VideoFileSummaryInfoTreeDirNode } from '../types';
 
 const videoMimeTypes = {
   mp4: 'video/mp4',
@@ -105,7 +106,13 @@ export function isTinyDirItem(item: VideoFileSummaryInfoListItem): item is TinyD
 
 // 递归获取目录中的视频文件
 export function getVideoFilesTinyTree(dir: string) {
-  const fileTree: VideoFileSummaryInfoList = [];
+  const tree: VideoFileSummaryInfoTreeDirNode = {
+    directoryName: path.basename(dir),
+    directories: [],
+    files: [],
+    fullpath: dir,
+    parentRef: void(0),
+  };
 
   // 读取目录内容
   const files = fs.readdirSync(dir);
@@ -116,17 +123,13 @@ export function getVideoFilesTinyTree(dir: string) {
 
     if (stats.isDirectory()) {
       // 递归处理子目录
-      const subDirTree = getVideoFilesTinyTree(fullPath);
-      if (subDirTree.length > 0) {
-        fileTree.push({
-          directory: file,
-          directoryPath: fullPath,
-          files: subDirTree
-        });
-      }
+      const dirNode = getVideoFilesTinyTree(fullPath);
+      dirNode.parentRef = tree;
+      tree.directories.push(dirNode);
+      
     } else if (videoExtensions.test(file)) {
       // 只处理视频文件
-      fileTree.push({
+      tree.files.push({
         fileName: file,
         mimeType: getMimeTypeMediaPath(fullPath),
         filePath: fullPath,
@@ -135,7 +138,7 @@ export function getVideoFilesTinyTree(dir: string) {
     }
   }
 
-  return fileTree;
+  return tree;
 }
 
 

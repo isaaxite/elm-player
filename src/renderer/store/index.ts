@@ -1,18 +1,28 @@
-import { VideoFileSummaryInfoListItem } from '../../types';
+import { VideoFileSummaryInfoTreeDirNode } from '../../types';
 import { VideoJsPlayer } from 'video.js';
 import { create } from 'zustand';
 
 interface PlayListState {
   selectedIdx: number;
   showPlaylist: boolean;
-  playlist: Array<VideoFileSummaryInfoListItem>;
+  playlist: VideoFileSummaryInfoTreeDirNode;
   rootDir: string;
-  activePlaylist: Array<VideoFileSummaryInfoListItem>;
+  activePlaylist: VideoFileSummaryInfoTreeDirNode;
+}
+
+function genEmptyDirNode () {
+  return {
+    directoryName: '',
+    fullpath: '',
+    parentRef: void(0),
+    directories: [],
+    files: [],
+  } as VideoFileSummaryInfoTreeDirNode;
 }
 
 interface PlalistAction {
-  initPlayList: (playlist: Array<VideoFileSummaryInfoListItem>) => void;
-  updateActivePlayList: (activePlaylist: Array<VideoFileSummaryInfoListItem>) => void;
+  initPlayList: (playlist: VideoFileSummaryInfoTreeDirNode) => void;
+  updateActivePlayList: (activePlaylist: VideoFileSummaryInfoTreeDirNode) => void;
   setRootDir: (rootDir: string) => void;
   setSelectedIdx: (selectedIdx: number) => void;
   togglePlaylist: () => void;
@@ -25,8 +35,8 @@ export const usePlayListStore = create<PlayListState & PlalistAction>()(
     selectedIdx: -1,
     showPlaylist: false,
     rootDir: '',
-    playlist: [],
-    activePlaylist: [],
+    playlist: genEmptyDirNode(),
+    activePlaylist: genEmptyDirNode(),
     setSelectedIdx: (selectedIdx) => set(() => ({ selectedIdx })),
     setRootDir: (rootDir) => set(() => ({ rootDir })),
     initPlayList: (playlist) => set(() => ({ playlist })),
