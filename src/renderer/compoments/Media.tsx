@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import VideoJS from './VideoJS';
 import { VideoJsPlayer } from 'video.js';
 import './Media.scss';
 import { useMediaStore, usePlayListStore } from '../store';
 import Playlist from './Playlist';
-import { VideoFileSummaryInfoListItem } from '../../types';
-import { isTinyDirItem } from '../../utils/typeGuards';
+import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
 
 
 const Media  = () => {
@@ -23,34 +22,36 @@ const Media  = () => {
     autoplay: true,
     controls: true,
     responsive: true,
-    controlBar: {
-      skipButtons: {
-        forward: 5,
-        backward: 5
-      }
-    },
+    // controlBar: {
+    //   skipButtons: {
+    //     forward: 5,
+    //     backward: 5
+    //   }
+    // },
     disablePictureInPicture: true,
     experimentalSvgIcons: true,
     preferFullWindow: true,
   };
 
   const handleKeyupSwitchMidea = () => {}
-  const handleDoubleClickListItem = (
+  const handleDoubleClickDirItem = (
     playerCuttent: VideoJsPlayer,
-    videoInfo: VideoFileSummaryInfoListItem
+    dirItem: VideoFileSummaryInfoTreeDirNode
   ) => {
-    if (isTinyDirItem(videoInfo)) {
-      return console.info('Dir', videoInfo.directory)
-    }
-
+    console.info({dirItem})
+  };
+  const handleDoubleClickFileItem = (
+    playerCuttent: VideoJsPlayer,
+    fileItem: VideoFileTreeSummaryInfoFileNode
+  ) => {
     if (playerCuttent.currentSrc()) {
       playerCuttent.pause();
       playerCuttent.reset();
     }
 
     playerCuttent.src({
-      src: videoInfo.filePath,
-      type: videoInfo.mimeType
+      src: fileItem.filePath,
+      type: fileItem.mimeType
     });
   };
 
@@ -67,9 +68,10 @@ const Media  = () => {
     const playlistWraper = appendPlaylistWraper(playerCuttent);
     setShowPlaylist();
     createRoot(document.getElementById(playlistWraper.id) as HTMLDivElement).render(
-      <Playlist onDoubleClickListItem={(e, videoInfo) => {
-        handleDoubleClickListItem(playerCuttent, videoInfo);
-      }} videoList={playlist} />
+      <Playlist
+        onDoubleClickFileItem={({ fileItem }) => handleDoubleClickFileItem(playerCuttent, fileItem)}
+        onDoubleClickDirItem={({ dirItem }) => handleDoubleClickDirItem(playerCuttent, dirItem)}
+      />
     );
   }
 

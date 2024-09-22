@@ -34,7 +34,6 @@ export default () => {
     });
   
     window.electronAPI.onSwitchPlaylist(() => {
-      console.info(111, activePlaylistRef.current)
       if (activePlaylistRef.current.length) {
         togglePlaylist();
         return;

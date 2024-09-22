@@ -1,12 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { createRoot } from 'react-dom/client'
-import Playlist from './Playlist';
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from 'video.js';
 import 'video.js/dist/video-js.css';
-// import * as playlist from 'videojs-playlist';
 import 'videojs-playlist';
-// import 'videojs-playlist-ui';
-// import 'videojs-playlist-ui/dist/videojs-playlist-ui.css';
 import './VideoJS.scss';
 import { usePlayListStore } from '../store';
 
@@ -22,7 +17,6 @@ export interface VideoInfo {
 
 export interface VideoJSProps {
   options: VideoJsPlayerOptions;
-  videoList: Array<VideoInfo>;
   onReady: (player: VideoJsPlayer) => void;
 }
 
@@ -31,14 +25,10 @@ export const VideoJS = (props: VideoJSProps) => {
   const playerRef: React.MutableRefObject<null | VideoJsPlayer> = React.useRef(null);
   const {
     options,
-    onReady,
-    videoList,
+    onReady
   }: VideoJSProps = props;
 
-  const [showPlaylist, togglePlaylist] = usePlayListStore(s => [
-    s.showPlaylist,
-    s.togglePlaylist,
-  ]);
+  const { showPlaylist } = usePlayListStore(s => s);
 
   const playlistNode = useRef(null);
 

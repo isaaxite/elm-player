@@ -3,8 +3,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import './Playlist.scss';
 import { usePlayListStore } from '../store';
-import { VideoFileSummaryInfoListItem } from '../../types';
-import { isTinyDirItem } from '../../utils/typeGuards';
+import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
 interface VideoSource {
   src: string;
   type: string;
@@ -18,19 +17,23 @@ export interface VideoInfo {
 interface PlaylistProps {
   classlist?: Array<string>;
   enableKeySwitch?: boolean;
-  videoList: Array<VideoFileSummaryInfoListItem>;
-  onDoubleClickListItem?: (
+  onDoubleClickDirItem?: (args: {
     event: React.MouseEvent<HTMLLIElement, MouseEvent>, 
-    videoInfo: VideoFileSummaryInfoListItem, 
-    idx: number
-  ) => void;
+    dirItem: VideoFileSummaryInfoTreeDirNode, 
+    idx: number,
+  }) => void;
+  onDoubleClickFileItem?: (args: {
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>, 
+    fileItem: VideoFileTreeSummaryInfoFileNode, 
+    idx: number,
+  }) => void;
 };
 
 const Playlist = (props: PlaylistProps) => {
   const scrollContainerRef: React.MutableRefObject<null | HTMLDivElement> = useRef(null);
   const {
-    classlist = [],
-    onDoubleClickListItem,
+    onDoubleClickDirItem,
+    onDoubleClickFileItem,
   } = props;
 
   const {
@@ -67,37 +70,40 @@ const Playlist = (props: PlaylistProps) => {
     const ps = new PerfectScrollbar(scrollContainerRef.current!);
   }, [scrollContainerRef]);
 
-  const handleDoubleClickListItem = (
-    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    videoInfo: VideoFileSummaryInfoListItem,
-    idx: number,
-  ) => {
-    // console.info(event.)
-    if (onDoubleClickListItem) {
-      onDoubleClickListItem(e, videoInfo, idx);
-    }
-
-    setSelectedIdx(idx);
-  };
-
-  const genListItemEle = (videoInfo: VideoFileSummaryInfoListItem, idx: number) => {
-    const [
-      tag,
-      name,
-      key,
-    ] = isTinyDirItem(videoInfo) ? ['D', videoInfo.directory, videoInfo.directoryPath] : ['M', videoInfo.fileName, videoInfo.filePath];
-
+  const genListDirItemEle = (dirItem: VideoFileSummaryInfoTreeDirNode, idx: number) => {
     return (
       <li
-        key={key}
+        key={dirItem.fullpath}
         className={[
           'elm-playlist__item',
           ...[idx === selectedIdx ? 'elm-playlist__item--selected' : ''],
         ].join(' ')}
-        onDoubleClick={(e) => handleDoubleClickListItem(e, videoInfo, idx)}
+        onDoubleClick={(event) => {
+          onDoubleClickDirItem && onDoubleClickDirItem({ event, dirItem, idx });
+          setSelectedIdx(idx);
+        }}
       >
-        <span className='elm-playlist__item-tag'>{tag} </span>
-        <span className='elm-playlist__item-title'>{name}</span>
+        <span className='elm-playlist__item-tag'>D </span>
+        <span className='elm-playlist__item-title'>{dirItem.directoryName}</span>
+      </li>
+    );
+  };
+
+  const genListFileItemEle = (fileItem: VideoFileTreeSummaryInfoFileNode, idx: number) => {
+    return (
+      <li
+        key={fileItem.filePath}
+        className={[
+          'elm-playlist__item',
+          ...[idx === selectedIdx ? 'elm-playlist__item--selected' : ''],
+        ].join(' ')}
+        onDoubleClick={(event) => {
+          onDoubleClickFileItem && onDoubleClickFileItem({ event, fileItem, idx });
+          setSelectedIdx(idx);
+        }}
+      >
+        <span className='elm-playlist__item-tag'>F </span>
+        <span className='elm-playlist__item-title'>{fileItem.fileName}</span>
       </li>
     );
   };
@@ -112,7 +118,8 @@ const Playlist = (props: PlaylistProps) => {
         data-mdb-perfect-scrollbar='true'
       >
         <ul>
-          {activePlaylist.map(genListItemEle)}
+          {activePlaylist.directories.map(genListDirItemEle)}
+          {activePlaylist.files.map((item, idx) => genListFileItemEle(item, idx + activePlaylist.directories.length))}
         </ul>
       </div>
     </>
