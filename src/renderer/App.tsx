@@ -6,6 +6,7 @@ import { useMediaStore, usePlayListStore } from "./store";
 
 export default () => {
   const {
+    rootDir,
     activePlaylist,
     initPlayList,
     setRootDir,
@@ -15,7 +16,6 @@ export default () => {
 
   const activePlaylistRef = useRef(activePlaylist);
   const curPlayer = useMediaStore(s => s.player);
-  const rootDir = usePlayListStore(s => s.rootDir);
 
   useEffect(() => {
     activePlaylistRef.current = activePlaylist;

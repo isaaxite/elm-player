@@ -31,12 +31,14 @@ interface PlaylistProps {
 
 const Playlist = (props: PlaylistProps) => {
   const scrollContainerRef: React.MutableRefObject<null | HTMLDivElement> = useRef(null);
+  const perfectScrollbarRef: React.MutableRefObject<null | PerfectScrollbar> = useRef(null);
   const {
     onDoubleClickDirItem,
     onDoubleClickFileItem,
   } = props;
 
   const {
+    rootDir,
     selectedIdx,
     showPlaylist,
     activePlaylist,
@@ -52,7 +54,6 @@ const Playlist = (props: PlaylistProps) => {
   ]);
 
   useEffect(() => {
-    console.info({showPlaylist})
     const elmPlaylistContainerEle = document.getElementById('elm-playlist') as HTMLDivElement;
     if (elmPlaylistContainerEle) {
       const HIDDEN_CLASSNAME = 'elm-playlist--hide';
@@ -62,20 +63,30 @@ const Playlist = (props: PlaylistProps) => {
         elmPlaylistContainerEle.classList.add(HIDDEN_CLASSNAME);
       }
     }
-  }, [showPlaylist])
-
-  useEffect(() => {
-    console.info({activePlaylist})
-  }, [activePlaylist])
-
+  }, [showPlaylist]);
 
   useEffect(() => {
     if (!scrollContainerRef.current) {
       return;
     }
 
-    const ps = new PerfectScrollbar(scrollContainerRef.current!);
+    perfectScrollbarRef.current = new PerfectScrollbar(scrollContainerRef.current!);
   }, [scrollContainerRef]);
+
+  useEffect(() => {
+    if (!scrollContainerRef.current || !perfectScrollbarRef.current) {
+      return console.info({
+        'scrollContainerRef.current': !!scrollContainerRef.current,
+        'perfectScrollbarRef.current': !!perfectScrollbarRef.current,
+      });
+    }
+
+    perfectScrollbarRef.current.update();
+  }, [
+    perfectScrollbarRef,
+    scrollContainerRef,
+    activePlaylist,
+  ]);
 
   const prevDirBtnClickHandler = () => {
     updateActivePlayList(activePlaylist.parentRef!);
@@ -122,9 +133,12 @@ const Playlist = (props: PlaylistProps) => {
 
   return showPlaylist ? (
     <>
-      <div className='elm-playlist__mask' onClick={() => {
-        setHidePlaylist();
-      }} />
+      <div
+        className='elm-playlist__mask'
+        onClick={() => {
+          setHidePlaylist();
+        }}
+      />
       <div className='elm-playlist__bg' />
       {isShowPreDirBtn ? (
         <button

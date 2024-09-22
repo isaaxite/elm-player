@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import VideoJS from './VideoJS';
 import { VideoJsPlayer } from 'video.js';
@@ -11,10 +11,11 @@ import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } fro
 const Media  = () => {
   const playerRef: React.MutableRefObject<VideoJsPlayer | null> = React.useRef(null);
   const {
+    rootDir,
     playlist,
     togglePlaylist,
     setShowPlaylist,
-    setHidePlaylist,
+    setSelectedIdx,
   } = usePlayListStore(s => s);
   const setPlayer = useMediaStore(s => s.setPlayer);
 
@@ -32,6 +33,22 @@ const Media  = () => {
     experimentalSvgIcons: true,
     preferFullWindow: true,
   };
+
+  useEffect(() => {
+    if (!playerRef.current || !rootDir) {
+      return console.log({
+        'playerRef.current': !!playerRef.current,
+        rootDir,
+      });
+    }
+
+    setSelectedIdx(-1);
+    playerRef.current.pause();
+    playerRef.current.reset();
+  }, [
+    rootDir,
+    playerRef,
+  ]);
 
   const handleKeyupSwitchMidea = () => {}
   const handleDoubleClickDirItem = (
