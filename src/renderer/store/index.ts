@@ -35,7 +35,9 @@ export const usePlayListStore = create<PlayListState & PlalistAction>()(
     selectedIdx: -1,
     showPlaylist: false,
     rootDir: '',
+    // root playlist
     playlist: genEmptyDirNode(),
+    // current display playlist
     activePlaylist: genEmptyDirNode(),
     setSelectedIdx: (selectedIdx) => set(() => ({ selectedIdx })),
     setRootDir: (rootDir) => set(() => ({ rootDir })),

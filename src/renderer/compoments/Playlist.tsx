@@ -40,8 +40,10 @@ const Playlist = (props: PlaylistProps) => {
     selectedIdx,
     showPlaylist,
     activePlaylist,
+    playlist: rootPlaylist,
     setSelectedIdx,
     setHidePlaylist,
+    updateActivePlayList,
   } = usePlayListStore(s => s);
 
   useEffect(() => {
@@ -70,6 +72,10 @@ const Playlist = (props: PlaylistProps) => {
     const ps = new PerfectScrollbar(scrollContainerRef.current!);
   }, [scrollContainerRef]);
 
+  const prevDirBtnClickHandler = () => {
+    updateActivePlayList(activePlaylist.parentRef!);
+  };
+
   const genListDirItemEle = (dirItem: VideoFileSummaryInfoTreeDirNode, idx: number) => {
     return (
       <li
@@ -79,8 +85,9 @@ const Playlist = (props: PlaylistProps) => {
           ...[idx === selectedIdx ? 'elm-playlist__item--selected' : ''],
         ].join(' ')}
         onDoubleClick={(event) => {
+          setSelectedIdx(-1);
+          updateActivePlayList(dirItem);
           onDoubleClickDirItem && onDoubleClickDirItem({ event, dirItem, idx });
-          setSelectedIdx(idx);
         }}
       >
         <span className='elm-playlist__item-tag'>D </span>
@@ -113,10 +120,16 @@ const Playlist = (props: PlaylistProps) => {
       <div className='elm-playlist__mask' onClick={() => {
         setHidePlaylist();
       }} />
-      <div className={'elm-playlist__container'}
+      <div className='elm-playlist__container'
         ref={scrollContainerRef}
         data-mdb-perfect-scrollbar='true'
       >
+        {activePlaylist.fullpath === rootPlaylist.fullpath ? (<></>) : (
+          <button
+            id='elm-playlist__prev-dir-btn'
+            onClick={prevDirBtnClickHandler}
+          >Prev Directory</button>
+        )}
         <ul>
           {activePlaylist.directories.map(genListDirItemEle)}
           {activePlaylist.files.map((item, idx) => genListFileItemEle(item, idx + activePlaylist.directories.length))}
