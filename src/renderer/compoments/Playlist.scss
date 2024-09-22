@@ -1,3 +1,9 @@
+
+$playlistWidth: 320px;
+$playlistBGColor: rgba(43, 51, 63, 0.9);
+$preBtnBorderWidth: 2px;
+$preBtnHeight: 24px;
+
 #elm-playlist {
   position: relative;
   // top: 0;
@@ -10,21 +16,40 @@
     display: block;
     width: 100%;
     font-size: 14px;
-    line-height: 24px;
+    line-height: $preBtnHeight;
     cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: $playlistWidth;
+    border-bottom: $preBtnBorderWidth solid black;
+    background-color: $playlistBGColor;
   }
 }
 
 .elm-playlist {
   &__container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: $playlistWidth;
+    height: calc(100vh - 3em);
+    overflow: hidden;
+
+    &--show-pre-btn {
+      top: $preBtnHeight + $preBtnBorderWidth;
+      height: calc(100vh - 3em - $preBtnHeight);
+    }
+  }
+
+  &__bg {
+    background-color: $playlistBGColor;
     height: 100%;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: 320px;
-    background-color: rgba(43, 51, 63, 0.9);
-    box-shadow: 0 0 4px 1px rgba(255, 255, 255, 1);
+    width: $playlistWidth;
   }
 
   &__mask {
