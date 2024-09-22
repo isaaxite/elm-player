@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import './Playlist.scss';
@@ -45,6 +45,11 @@ const Playlist = (props: PlaylistProps) => {
     setHidePlaylist,
     updateActivePlayList,
   } = usePlayListStore(s => s);
+
+  const isShowPreDirBtn = useMemo(() => activePlaylist.fullpath !== rootPlaylist.fullpath, [
+    activePlaylist.fullpath,
+    rootPlaylist.fullpath,
+  ]);
 
   useEffect(() => {
     console.info({showPlaylist})
@@ -120,16 +125,20 @@ const Playlist = (props: PlaylistProps) => {
       <div className='elm-playlist__mask' onClick={() => {
         setHidePlaylist();
       }} />
-      <div className='elm-playlist__container'
+      <div className='elm-playlist__bg' />
+      {isShowPreDirBtn ? (
+        <button
+          id='elm-playlist__prev-dir-btn'
+          onClick={prevDirBtnClickHandler}
+        >Prev Directory</button>
+      ) : (<></>)}
+      <div className={[
+        'elm-playlist__container',
+        ...[isShowPreDirBtn ? 'elm-playlist__container--show-pre-btn': ''],
+      ].join(' ')}
         ref={scrollContainerRef}
         data-mdb-perfect-scrollbar='true'
       >
-        {activePlaylist.fullpath === rootPlaylist.fullpath ? (<></>) : (
-          <button
-            id='elm-playlist__prev-dir-btn'
-            onClick={prevDirBtnClickHandler}
-          >Prev Directory</button>
-        )}
         <ul>
           {activePlaylist.directories.map(genListDirItemEle)}
           {activePlaylist.files.map((item, idx) => genListFileItemEle(item, idx + activePlaylist.directories.length))}
