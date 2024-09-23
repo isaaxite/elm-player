@@ -4,7 +4,7 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import './Playlist.scss';
 import { usePlayListStore } from '../store';
 import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
-import { range } from '../../utils';
+import { debounce, range } from '../../utils';
 interface VideoSource {
   src: string;
   type: string;
@@ -113,6 +113,37 @@ const Playlist = (props: PlaylistProps) => {
     scrollContainerRef,
     activePlaylist,
   ]);
+
+  useEffect(() => {
+    const windowResizeHandler = debounce(() => {
+      if (!perfectScrollbarRef.current) {
+        return console.warn(`perfectScrollbarRef.current is ${typeof perfectScrollbarRef.current}`);
+      }
+      console.info('emit perfectScrollbarRef.current.update()');
+      perfectScrollbarRef.current.update();
+    }, 200);
+    window.electronAPI.onWindowResize(windowResizeHandler);
+  }, []);
+
+  useEffect(() => {
+    const switchToNewMedia = (type: 'PREV' | 'NEXT') => {
+      const state = usePlayListStore.getState();
+      const ranger = range(state.activePlaylist.directories.length, state.activePlaylist.directories.length + state.activePlaylist.files.length - 1);
+
+      if (ranger.isOutside(state.selectedIdx)) {
+        return;
+      }
+
+      const newIdx = type === 'PREV' 
+        ? ranger.getPrevIdxBy(state.selectedIdx)
+        : ranger.getNextIdxBy(state.selectedIdx);
+      const newFileItem = state.activePlaylist.files[newIdx % state.activePlaylist.directories.length];
+      fileItemDoubleClickHandler(newFileItem, newIdx);
+    };
+
+    window.electronAPI.onPrevMedia(() => switchToNewMedia('PREV'));
+    window.electronAPI.onNextMedia(() => switchToNewMedia('NEXT'));
+  }, []);
 
   useEffect(() => {
     function submitHighlightIdx() {

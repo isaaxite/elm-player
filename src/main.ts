@@ -25,24 +25,35 @@ function getLocalFiles(directory: string): Promise<FileList[]> {
 
 const createWindow = () => {
   const win = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
     width: 800,
     height: 600,
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
+    titleBarStyle: 'default',
+    darkTheme: true
   });
-
-  // win.setFullScreen(true);
-  
   
   win.webContents.openDevTools()
+  win.autoHideMenuBar = true;
 
   win.loadFile(path.join(__dirname, 'index.html'));
+  
+  const onWindowResizeHandler = () => {
+    win.webContents.send('window-resize');
+  };
+  // linux
+  win.on('resize', onWindowResizeHandler);
+  // macos or windows
+  win.on('resized', onWindowResizeHandler);
 
   const menu = Menu.buildFromTemplate([
     {
       label: 'Open Dir',
+      accelerator: 'D',
       click: async () => {
         const result = await dialog.showOpenDialog(win, {
           properties: ['openDirectory']
