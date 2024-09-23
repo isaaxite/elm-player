@@ -28,4 +28,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     })
   },
   getVideoFileSummaryInfoList: (directory: string): Promise<VideoFileSummaryInfoTreeDirNode> => ipcRenderer.invoke('get-video-file-tiny-tree', directory),
+  onWindowResize: ipcRendererHandlerFactory('window-resize'),
 });

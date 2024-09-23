@@ -16,3 +16,30 @@ export function range(start: number, end: number) {
     },
   };
 }
+
+export function throttle<F extends (...args: any[]) => any>(func: F, delay: number) {
+  let lastCall = 0;
+  
+  return function(...args: Parameters<F>) {
+    const now = new Date().getTime();
+    
+    if (now - lastCall < delay) {
+      return;
+    }
+    
+    lastCall = now;
+    func(...args);
+  };
+}
+
+export function debounce<F extends (...args: any[]) => any>(func: F, delay: number) {
+  let timeoutId: number | NodeJS.Timeout;
+
+  return function(...args: Parameters<F>) {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}

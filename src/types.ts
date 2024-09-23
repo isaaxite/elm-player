@@ -21,7 +21,8 @@ export interface IElectronAPI {
   onNextMedia: (handler: () => void) => Promise<void>;
   onSwitchPlaylist: (handler: () => void) => Promise<void>;
   onSelectedDirectory: (handler: (dirPath: string) => void) => Promise<void>;
-  getVideoFileSummaryInfoList: (directory: string) => Promise<VideoFileSummaryInfoTreeDirNode>,
+  getVideoFileSummaryInfoList: (directory: string) => Promise<VideoFileSummaryInfoTreeDirNode>;
+  onWindowResize: (handler: () => void) => Promise<void>;
 }
 
 export interface FileList {
