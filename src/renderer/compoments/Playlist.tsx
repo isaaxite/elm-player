@@ -4,6 +4,7 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import './Playlist.scss';
 import { usePlayListStore } from '../store';
 import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
+import { range } from '../../utils';
 interface VideoSource {
   src: string;
   type: string;
@@ -18,12 +19,10 @@ interface PlaylistProps {
   classlist?: Array<string>;
   enableKeySwitch?: boolean;
   onDoubleClickDirItem?: (args: {
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>, 
     dirItem: VideoFileSummaryInfoTreeDirNode, 
     idx: number,
   }) => void;
   onDoubleClickFileItem?: (args: {
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>, 
     fileItem: VideoFileTreeSummaryInfoFileNode, 
     idx: number,
   }) => void;
@@ -40,18 +39,45 @@ const Playlist = (props: PlaylistProps) => {
   const {
     rootDir,
     selectedIdx,
+    highlightIdx,
     showPlaylist,
     activePlaylist,
     playlist: rootPlaylist,
     setSelectedIdx,
     setHidePlaylist,
     updateActivePlayList,
+    setHighlightIdxForward,
+    setHighlightIdxBackward,
   } = usePlayListStore(s => s);
 
   const isShowPreDirBtn = useMemo(() => activePlaylist.fullpath !== rootPlaylist.fullpath, [
     activePlaylist.fullpath,
     rootPlaylist.fullpath,
   ]);
+
+  const getActiveStyleClass = (idx: number) => {
+    return idx === selectedIdx
+      ? 'elm-playlist__item--selected'
+      : idx === highlightIdx
+        ? 'elm-playlist__item--highlight'
+        : '';
+  };
+
+  const dirItemDoubleClickHandler = (
+    dirItem: VideoFileSummaryInfoTreeDirNode,
+    idx: number
+  ) => {
+    setSelectedIdx(-1);
+    updateActivePlayList(dirItem);
+    onDoubleClickDirItem && onDoubleClickDirItem({ dirItem, idx });
+  };
+  const fileItemDoubleClickHandler = (
+    fileItem: VideoFileTreeSummaryInfoFileNode,
+    idx: number
+  ) => {
+    onDoubleClickFileItem && onDoubleClickFileItem({ fileItem, idx });
+    setSelectedIdx(idx);
+  };
 
   useEffect(() => {
     const elmPlaylistContainerEle = document.getElementById('elm-playlist') as HTMLDivElement;
@@ -88,6 +114,49 @@ const Playlist = (props: PlaylistProps) => {
     activePlaylist,
   ]);
 
+  useEffect(() => {
+    function submitHighlightIdx() {
+      const state = usePlayListStore.getState();
+      const highlightIdx = state.highlightIdx;
+
+      if (range(0, state.activePlaylist.directories.length + state.activePlaylist.files.length - 1).isOutside(highlightIdx)) {
+        return;
+      }
+
+      if (
+        state.activePlaylist.directories.length
+        && highlightIdx < state.activePlaylist.directories.length
+      ) {
+        dirItemDoubleClickHandler(state.activePlaylist.directories[highlightIdx], highlightIdx);
+        return;
+      }
+
+      if (state.activePlaylist.files.length) {
+        setSelectedIdx(highlightIdx);
+        fileItemDoubleClickHandler(state.activePlaylist.files[highlightIdx % state.activePlaylist.directories.length], highlightIdx);
+      }
+    }
+    function keyPressHandler(event: KeyboardEvent) {
+      switch (event.key) {
+        case 'ArrowUp':
+          setHighlightIdxBackward();
+          break;
+        case 'ArrowDown':
+          setHighlightIdxForward();
+          break;
+        case 'Enter':
+          submitHighlightIdx();
+          break; 
+        default:
+          console.info(`key down ${event.key}`);
+      }
+    };
+    window.addEventListener('keydown', keyPressHandler);
+    return () => {
+      window.removeEventListener('keydown', keyPressHandler);
+    };
+  }, []);
+
   const prevDirBtnClickHandler = () => {
     updateActivePlayList(activePlaylist.parentRef!);
   };
@@ -98,13 +167,9 @@ const Playlist = (props: PlaylistProps) => {
         key={dirItem.fullpath}
         className={[
           'elm-playlist__item',
-          ...[idx === selectedIdx ? 'elm-playlist__item--selected' : ''],
+          ...[getActiveStyleClass(idx)],
         ].join(' ')}
-        onDoubleClick={(event) => {
-          setSelectedIdx(-1);
-          updateActivePlayList(dirItem);
-          onDoubleClickDirItem && onDoubleClickDirItem({ event, dirItem, idx });
-        }}
+        onDoubleClick={() => dirItemDoubleClickHandler(dirItem, idx)}
       >
         <span className='elm-playlist__item-tag'>D </span>
         <span className='elm-playlist__item-title'>{dirItem.directoryName}</span>
@@ -118,12 +183,9 @@ const Playlist = (props: PlaylistProps) => {
         key={fileItem.filePath}
         className={[
           'elm-playlist__item',
-          ...[idx === selectedIdx ? 'elm-playlist__item--selected' : ''],
+          ...[getActiveStyleClass(idx)],
         ].join(' ')}
-        onDoubleClick={(event) => {
-          onDoubleClickFileItem && onDoubleClickFileItem({ event, fileItem, idx });
-          setSelectedIdx(idx);
-        }}
+        onDoubleClick={() => fileItemDoubleClickHandler(fileItem, idx)}
       >
         <span className='elm-playlist__item-tag'>F </span>
         <span className='elm-playlist__item-title'>{fileItem.fileName}</span>
