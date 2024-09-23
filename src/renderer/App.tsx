@@ -34,7 +34,7 @@ export default () => {
     });
   
     window.electronAPI.onSwitchPlaylist(() => {
-      if (activePlaylistRef.current.length) {
+      if (activePlaylistRef.current.files.length || activePlaylistRef.current.directories.length) {
         togglePlaylist();
         return;
       }

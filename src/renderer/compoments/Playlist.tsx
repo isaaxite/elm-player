@@ -115,6 +115,26 @@ const Playlist = (props: PlaylistProps) => {
   ]);
 
   useEffect(() => {
+    const switchToNewMedia = (type: 'PREV' | 'NEXT') => {
+      const state = usePlayListStore.getState();
+      const ranger = range(state.activePlaylist.directories.length, state.activePlaylist.directories.length + state.activePlaylist.files.length - 1);
+
+      if (ranger.isOutside(state.selectedIdx)) {
+        return;
+      }
+
+      const newIdx = type === 'PREV' 
+        ? ranger.getPrevIdxBy(state.selectedIdx)
+        : ranger.getNextIdxBy(state.selectedIdx);
+      const newFileItem = state.activePlaylist.files[newIdx % state.activePlaylist.directories.length];
+      fileItemDoubleClickHandler(newFileItem, newIdx);
+    };
+
+    window.electronAPI.onPrevMedia(() => switchToNewMedia('PREV'));
+    window.electronAPI.onNextMedia(() => switchToNewMedia('NEXT'));
+  }, []);
+
+  useEffect(() => {
     function submitHighlightIdx() {
       const state = usePlayListStore.getState();
       const highlightIdx = state.highlightIdx;

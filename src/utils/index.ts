@@ -8,5 +8,11 @@ export function range(start: number, end: number) {
   return {
     isInside,
     isOutside,
+    getPrevIdxBy(currentIdx: number) {
+      return currentIdx <= start ? start : currentIdx - 1; 
+    },
+    getNextIdxBy(currentIdx: number) {
+      return currentIdx >= end ? end : currentIdx + 1; 
+    },
   };
 }

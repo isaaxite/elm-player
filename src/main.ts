@@ -37,12 +37,14 @@ const createWindow = () => {
   
   
   win.webContents.openDevTools()
+  win.autoHideMenuBar = true;
 
   win.loadFile(path.join(__dirname, 'index.html'));
 
   const menu = Menu.buildFromTemplate([
     {
       label: 'Open Dir',
+      accelerator: 'D',
       click: async () => {
         const result = await dialog.showOpenDialog(win, {
           properties: ['openDirectory']
