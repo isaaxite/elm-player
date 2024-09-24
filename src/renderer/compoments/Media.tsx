@@ -5,7 +5,7 @@ import { VideoJsPlayer } from 'video.js';
 import './Media.scss';
 import { useMediaStore, usePlayListStore } from '../store';
 import Playlist from './Playlist';
-import { VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
+import { PlaybackType, VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
 
 
 const Media  = () => {
@@ -49,6 +49,28 @@ const Media  = () => {
     rootDir,
     playerRef,
   ]);
+
+  // shotcut
+  useEffect(() => {
+    window.electronAPI.onPlayback((playbackType) => {
+      const seek = (sec: number) => {
+        const currentTime = playerRef.current!.currentTime();
+        const ret = playerRef.current!.currentTime(currentTime + sec);
+        console.info({ currentTime, ret });
+      };
+      switch (playbackType) {
+        case PlaybackType.JUMP_BACKWARD:
+          seek(-5);
+          break;
+        case PlaybackType.JUMP_FORWARD:
+          seek(5);
+          break;
+        default:
+          console.info(playbackType)
+      }
+      
+    });
+  }, []);
 
   const handleKeyupSwitchMidea = () => {}
   const handleDoubleClickDirItem = (
