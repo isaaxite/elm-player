@@ -5,7 +5,7 @@ import { VideoJsPlayer } from 'video.js';
 import './Media.scss';
 import { useMediaStore, usePlayListStore } from '../store';
 import Playlist from './Playlist';
-import { PlaybackType, VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
+import { AudioMenuType, PlaybackType, VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
 
 
 const Media  = () => {
@@ -52,7 +52,8 @@ const Media  = () => {
 
   // shotcut
   useEffect(() => {
-    window.electronAPI.onPlayback((playbackType) => {
+    window.electronAPI.onPlaybackNativeMenuClick((playbackType) => {
+      console.info(`emit onPlaybackNativeMenuClick, playbackType=${playbackType}`);
       const seek = (sec: number) => {
         const currentTime = playerRef.current!.currentTime();
         const ret = playerRef.current!.currentTime(currentTime + sec);
@@ -69,6 +70,30 @@ const Media  = () => {
           console.info(playbackType)
       }
       
+    });
+
+    let currentMuteState = false;
+    window.electronAPI.onAudioNativeMenuClick((audioMenuType) => {
+      const volumeIncrease = (percentNum: number) => {
+        const currentVolume =  playerRef.current!.volume();
+        const newVolume = Math.floor(currentVolume * 100 + percentNum) / 100;
+        playerRef.current!.volume(newVolume);
+      };
+      switch (audioMenuType) {
+        case AudioMenuType.INCREASE_VOLUME:
+          volumeIncrease(5);
+          break;
+        case AudioMenuType.DECREASE_VOLUME:
+          volumeIncrease(-5);
+          break;
+        case AudioMenuType.MUTE_VOLUME:
+          // volumeIncrease(-10);
+          currentMuteState = !currentMuteState;
+          playerRef.current!.muted(currentMuteState);
+          break;
+        default:
+          console.info(audioMenuType)
+      }
     });
   }, []);
 

@@ -1,5 +1,5 @@
 import { BrowserWindow, Menu, dialog } from "electron";
-import { PlaybackType } from "./types";
+import { AudioMenuType, PlaybackType } from "./types";
 import { IELECTRON_EVENT_TYPES, ELECTRON_KEYBOARD_KEYS } from "./constant";
 
 export function setApplicationMenu(props: { win: BrowserWindow }) {
@@ -31,16 +31,26 @@ export function setApplicationMenu(props: { win: BrowserWindow }) {
         },
         {
           label: 'Increase Volume',
-          accelerator: '=',
+          accelerator: ELECTRON_KEYBOARD_KEYS.equal,
           click: () => {
             // todo
+            win.webContents.send(IELECTRON_EVENT_TYPES.audio, AudioMenuType.INCREASE_VOLUME);
           }
         },
         {
           label: 'Decrease Volume',
-          accelerator: '-',
+          accelerator: ELECTRON_KEYBOARD_KEYS.dash,
           click: () => {
             // todo
+            win.webContents.send(IELECTRON_EVENT_TYPES.audio, AudioMenuType.DECREASE_VOLUME);
+          }
+        },
+        {
+          label: 'Mute Volume',
+          accelerator: ELECTRON_KEYBOARD_KEYS.m,
+          click: () => {
+            // todo
+            win.webContents.send(IELECTRON_EVENT_TYPES.audio, AudioMenuType.MUTE_VOLUME);
           }
         }
       ]

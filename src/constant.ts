@@ -10,8 +10,10 @@ export const VIDEO_MINE_TYPES = {
   mpg: 'video/mpeg'
 } as const;
 
+// Warrning: need to sync to the same name val in preload.js
 export const IELECTRON_EVENT_TYPES = {
   playback: 'native_menu_emit_playback',
+  audio: 'native_menu_emit_audio',
 } as const;
 
 export const ELECTRON_KEYBOARD_KEYS = {

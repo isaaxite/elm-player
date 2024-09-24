@@ -18,6 +18,12 @@ export interface VideoFileSummaryInfoTreeDirNode {
 export enum PlaybackType {
   JUMP_BACKWARD = 'jump_backward',
   JUMP_FORWARD = 'jump_forward',
+};
+
+export enum AudioMenuType {
+  INCREASE_VOLUME = 'increase_volume',
+  DECREASE_VOLUME = 'decrease_volume',
+  MUTE_VOLUME = 'mute_volume',
 }
 
 export interface IElectronAPI {
@@ -28,7 +34,8 @@ export interface IElectronAPI {
   onSelectedDirectory: (handler: (dirPath: string) => void) => Promise<void>;
   getVideoFileSummaryInfoList: (directory: string) => Promise<VideoFileSummaryInfoTreeDirNode>;
   onWindowResize: (handler: () => void) => Promise<void>;
-  onPlayback: (handler: (type: PlaybackType) => void) => Promise<void>;
+  onPlaybackNativeMenuClick: (handler: (type: PlaybackType) => void) => Promise<void>;
+  onAudioNativeMenuClick: (handler: (type: AudioMenuType) => void) => Promise<void>;
 }
 
 export interface FileList {
