@@ -9,3 +9,7 @@ export const VIDEO_MINE_TYPES = {
   mpeg: 'video/mpeg',
   mpg: 'video/mpeg'
 } as const;
+
+export const IELECTRON_EVENT_TYPES = {
+  playback: 'native_menu_emit_playback',
+} as const;

@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path"
-import { app, BrowserWindow, ipcMain, Menu, dialog } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { FileList } from "./types";
 import { getVideoFilesTinyTree } from "./utils/readLocalMediaFiles";
+import { setApplicationMenu } from "./menu";
 
 function getLocalFiles(directory: string): Promise<FileList[]> {
   return new Promise((resolve, reject) => {
@@ -37,10 +38,10 @@ const createWindow = () => {
     darkTheme: true
   });
   
-  win.webContents.openDevTools()
-  win.autoHideMenuBar = true;
+  win.webContents.openDevTools();
 
   win.loadFile(path.join(__dirname, 'index.html'));
+  setApplicationMenu({ win });
   
   const onWindowResizeHandler = () => {
     win.webContents.send('window-resize');
@@ -50,43 +51,6 @@ const createWindow = () => {
   // macos or windows
   win.on('resized', onWindowResizeHandler);
 
-  const menu = Menu.buildFromTemplate([
-    {
-      label: 'Open Dir',
-      accelerator: 'D',
-      click: async () => {
-        const result = await dialog.showOpenDialog(win, {
-          properties: ['openDirectory']
-        });
-        if (!result.canceled) {
-          win.webContents.send('selected-directory', result.filePaths[0]);
-        }
-      }
-    },
-    {
-      label: 'Prev',
-      accelerator: 'P',
-      click: () => {
-        win.webContents.send('prev-media');
-      }
-    },
-    {
-      label: 'Next',
-      accelerator: 'N',
-      click: () => {
-        win.webContents.send('next-media');
-      }
-    },
-    {
-      label: 'Playlist',
-      accelerator: 'L',
-      click: () => {
-        win.webContents.send('switch-playlist');
-      }
-    }
-  ]);
-
-  Menu.setApplicationMenu(menu);
 
   ipcMain.handle('get-local-files', async (event, directory) => {
     try {

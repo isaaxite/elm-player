@@ -50,6 +50,13 @@ const Media  = () => {
     playerRef,
   ]);
 
+  // shotcut
+  useEffect(() => {
+    window.electronAPI.onPlayback((playbackType) => {
+      console.info(playbackType);
+    });
+  }, []);
+
   const handleKeyupSwitchMidea = () => {}
   const handleDoubleClickDirItem = (
     playerCuttent: VideoJsPlayer,
