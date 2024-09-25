@@ -18,6 +18,7 @@ export interface VideoFileSummaryInfoTreeDirNode {
 export enum PlaybackType {
   JUMP_BACKWARD = 'jump_backward',
   JUMP_FORWARD = 'jump_forward',
+  PLAY_OR_PAUSE = 'play_or_pause',
 };
 
 export enum AudioMenuType {

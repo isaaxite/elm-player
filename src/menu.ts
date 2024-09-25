@@ -41,7 +41,6 @@ export function setApplicationMenu(props: { win: BrowserWindow }) {
           label: 'Decrease Volume',
           accelerator: ELECTRON_KEYBOARD_KEYS.dash,
           click: () => {
-            // todo
             win.webContents.send(IELECTRON_EVENT_TYPES.audio, AudioMenuType.DECREASE_VOLUME);
           }
         },
@@ -49,7 +48,6 @@ export function setApplicationMenu(props: { win: BrowserWindow }) {
           label: 'Mute Volume',
           accelerator: ELECTRON_KEYBOARD_KEYS.m,
           click: () => {
-            // todo
             win.webContents.send(IELECTRON_EVENT_TYPES.audio, AudioMenuType.MUTE_VOLUME);
           }
         }
@@ -59,10 +57,10 @@ export function setApplicationMenu(props: { win: BrowserWindow }) {
       label: 'Playback',
       submenu: [
         {
-          label: 'Play/Pause',
-          accelerator: 'Space',
+          label: 'Play / Pause',
+          accelerator: ELECTRON_KEYBOARD_KEYS.space,
           click: () => {
-            // todo
+            win.webContents.send(IELECTRON_EVENT_TYPES.playback, PlaybackType.PLAY_OR_PAUSE);
           }
         },
         {

@@ -59,12 +59,23 @@ const Media  = () => {
         const ret = playerRef.current!.currentTime(currentTime + sec);
         console.info({ currentTime, ret });
       };
+      const setPlayOrPause = () => {
+        const playerRefCurrent = playerRef.current!
+        if (playerRefCurrent.paused()) {
+          playerRefCurrent.play();
+          return;
+        }
+        playerRefCurrent.pause();
+      }
       switch (playbackType) {
         case PlaybackType.JUMP_BACKWARD:
           seek(-5);
           break;
         case PlaybackType.JUMP_FORWARD:
           seek(5);
+          break;
+        case PlaybackType.PLAY_OR_PAUSE:
+          setPlayOrPause();
           break;
         default:
           console.info(playbackType)
@@ -150,6 +161,15 @@ const Media  = () => {
 
     player.on('dispose', () => {
       console.log('player will dispose');
+    });
+
+    const elmVjsEle = document.getElementById('elm-vjs') as HTMLDivElement;
+    player.on('play', () => {
+      elmVjsEle.classList.remove('elm-vjs__big-play-button--show');
+    });
+
+    player.on('pause', () => {
+      elmVjsEle.classList.add('elm-vjs__big-play-button--show');
     });
 
     (player.getChild as any)('ControlBar').addChild('button', {

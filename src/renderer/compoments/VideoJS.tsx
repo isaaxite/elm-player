@@ -66,7 +66,7 @@ export const VideoJS = (props: VideoJSProps) => {
 
   return (
     <>
-      <div className='elm-vjs' data-vjs-player>
+      <div id="elm-vjs" className='elm-vjs' data-vjs-player>
         <div className='elm-vjs__wraper' ref={videoRef} />
       </div>
       <div ref={playlistNode} className="vjs-playlist" />

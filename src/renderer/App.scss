@@ -10,3 +10,9 @@ body {
 .menubar {
   font-size: 12px; /* 设置菜单栏文字的大小 */
 }
+
+.elm-vjs__big-play-button--show {
+  .vjs-big-play-button {
+    display: block;
+  }
+}
