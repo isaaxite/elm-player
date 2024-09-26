@@ -167,6 +167,7 @@ const Playlist = (props: PlaylistProps) => {
         fileItemDoubleClickHandler(state.activePlaylist.files[highlightIdx % state.activePlaylist.directories.length], highlightIdx);
       }
     }
+
     function keyPressHandler(event: KeyboardEvent) {
       switch (event.key) {
         case 'ArrowUp':
@@ -182,11 +183,17 @@ const Playlist = (props: PlaylistProps) => {
           console.info(`key down ${event.key}`);
       }
     };
+
+    if (!showPlaylist) {
+      window.removeEventListener('keydown', keyPressHandler);
+      return;
+    }
+
     window.addEventListener('keydown', keyPressHandler);
     return () => {
       window.removeEventListener('keydown', keyPressHandler);
     };
-  }, []);
+  }, [showPlaylist]);
 
   const prevDirBtnClickHandler = () => {
     updateActivePlayList(activePlaylist.parentRef!);

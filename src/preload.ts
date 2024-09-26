@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { VideoFileSummaryInfoTreeDirNode } from "./types";
+import { AudioMenuType, PlaybackType, VideoFileSummaryInfoTreeDirNode } from "./types";
+// todo: error
+// import { IELECTRON_EVENT_TYPES } from "./constant";
+
+const IELECTRON_EVENT_TYPES = {
+  playback: 'native_menu_emit_playback',
+  audio: 'native_menu_emit_audio',
+} as const;
+
 
 function ipcRendererHandlerFactory(eventNmae: string) {
   return (handler: () => void) => {
@@ -29,4 +37,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   getVideoFileSummaryInfoList: (directory: string): Promise<VideoFileSummaryInfoTreeDirNode> => ipcRenderer.invoke('get-video-file-tiny-tree', directory),
   onWindowResize: ipcRendererHandlerFactory('window-resize'),
+  onPlaybackNativeMenuClick: (handler: (type: PlaybackType) => void) => {
+    return ipcRenderer.on(IELECTRON_EVENT_TYPES.playback, (e, type) => {
+      handler(type);
+    });
+  },
+  onAudioNativeMenuClick: (handler: (type: AudioMenuType) => void) => {
+    return ipcRenderer.on(IELECTRON_EVENT_TYPES.audio, (e, type) => {
+      handler(type);
+    });
+  }
 });
