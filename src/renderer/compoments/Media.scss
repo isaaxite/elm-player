@@ -1,3 +1,56 @@
 .vjs-control-bar {
   z-index: 10;
 }
+
+#elm-vjs {
+  .elm-control-bar {
+
+    &__playlist-btn, &__prev-btn, &__next-btn {
+      padding: 0;
+      width: 4em;
+
+      &::before {
+        position: relative;
+        bottom: 1px;
+        font-size: 2em;
+      }
+    }
+
+    &__prev-btn {
+      order: 10;
+    }
+
+    &__next-btn {
+      order: 30;
+    }
+
+    &__playlist-btn {
+      order: 80;
+    }
+  }
+
+  .vjs-play-control {
+    order: 20;
+  }
+
+  .vjs-progress-control {
+    order: 50;
+  }
+
+  .vjs-volume-panel {
+    order: 65;
+  }
+
+  .vjs-remaining-time {
+    order: 60;
+    // display: none;
+  }
+
+  .vjs-fullscreen-control {
+    order: 70;
+  }
+
+  .vjs-picture-in-picture-control {
+    display: none;
+  }
+}
