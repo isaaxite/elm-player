@@ -1,10 +1,13 @@
 import { VIDEO_MINE_TYPES } from "./constant";
 
+export type VideoMimeType = typeof VIDEO_MINE_TYPES[keyof typeof VIDEO_MINE_TYPES] | 'video/unknown';
+
 export interface VideoFileTreeSummaryInfoFileNode {
   fileName: string;
   filePath: string;
   fileSize: number;
   mimeType: VideoMimeType;
+  detail?: MediaFileDetail;
 }
 
 export interface VideoFileSummaryInfoTreeDirNode {
@@ -27,8 +30,30 @@ export enum AudioMenuType {
   MUTE_VOLUME = 'mute_volume',
 }
 
+export interface MediaFileDetail {
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  resolution: {
+    isValid: boolean,
+    width: number;
+    height: number;
+  };
+  mediaType: VideoMimeType;
+  audioTracks: Array<{
+    codec: string;
+    channels: number;
+    language: string;
+  }>;
+  subtitles: Array<{
+    codec: string;
+    language: string;
+  }>;
+}
+
 export interface IElectronAPI {
   getLocalFiles: (directory: string) => Promise<FileList[]>;
+  getMediaDetail: (mediaFilepath: string) => Promise<MediaFileDetail>;
   onPrevMedia: (handler: () => void) => Promise<void>;
   onNextMedia: (handler: () => void) => Promise<void>;
   onSwitchPlaylist: (handler: () => void) => Promise<void>;
@@ -37,6 +62,7 @@ export interface IElectronAPI {
   onWindowResize: (handler: () => void) => Promise<void>;
   onPlaybackNativeMenuClick: (handler: (type: PlaybackType) => void) => Promise<void>;
   onAudioNativeMenuClick: (handler: (type: AudioMenuType) => void) => Promise<void>;
+  updateWindowSize: (width: number, height: number) => Promise<void>;
 }
 
 export interface FileList {
@@ -45,4 +71,3 @@ export interface FileList {
   isDirectory: boolean;
 }
 
-export type VideoMimeType = typeof VIDEO_MINE_TYPES[keyof typeof VIDEO_MINE_TYPES] | 'video/unknown';

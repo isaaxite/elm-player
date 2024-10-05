@@ -1,4 +1,4 @@
-import { VideoFileSummaryInfoTreeDirNode } from '../../types';
+import { MediaFileDetail, VideoFileSummaryInfoTreeDirNode } from '../../types';
 import { VideoJsPlayer } from 'video.js';
 import { create } from 'zustand';
 
@@ -9,6 +9,7 @@ interface PlayListState {
   playlist: VideoFileSummaryInfoTreeDirNode;
   rootDir: string;
   activePlaylist: VideoFileSummaryInfoTreeDirNode;
+  curDirPaths: Array<number>;
 }
 
 interface PlalistAction {
@@ -23,6 +24,9 @@ interface PlalistAction {
   togglePlaylist: () => void;
   setShowPlaylist: () => void;
   setHidePlaylist: () => void;
+  updateFileItemDetailBy: (idx: number, detail: MediaFileDetail) => void;
+  pushDirPath: (idx: number) => void;
+  popDirPath: () => void; 
 }
 
 function genEmptyDirNode () {
@@ -45,6 +49,7 @@ export const usePlayListStore = create<PlayListState & PlalistAction>()(
     playlist: genEmptyDirNode(),
     // current display playlist
     activePlaylist: genEmptyDirNode(),
+    curDirPaths: [],
     pureSetSelectedIdx: (selectedIdx) => set(() => ({ selectedIdx })),
     setSelectedIdx: (selectedIdx) => set(() => ({ selectedIdx, highlightIdx: selectedIdx })),
     setHighlightIdx: (highlightIdx) => set(() => ({ highlightIdx })),
@@ -63,6 +68,26 @@ export const usePlayListStore = create<PlayListState & PlalistAction>()(
     togglePlaylist: () => set((state) => ({ showPlaylist: !state.showPlaylist })),
     setShowPlaylist: () => set(() => ({ showPlaylist: true })),
     setHidePlaylist: () => set(() => ({ showPlaylist: false })),
+    updateFileItemDetailBy: (idx, detail) => set((s) => {
+      const playlist = s.playlist;
+      let activePlaylist = playlist;
+      for (let dirIdx of s.curDirPaths) {
+        activePlaylist = activePlaylist.directories[dirIdx];
+      }
+
+      activePlaylist.files[idx - activePlaylist.directories.length].detail = detail;
+      return { playlist, activePlaylist };
+    }),
+    pushDirPath: (idx) => set((s) => {
+      const curDirPaths = s.curDirPaths;
+      curDirPaths.push(idx);
+      return { curDirPaths };
+    }),
+    popDirPath: () => set((s) => {
+      const curDirPaths = s.curDirPaths;
+      curDirPaths.pop();
+      return { curDirPaths };
+    }),
   })
 );
 

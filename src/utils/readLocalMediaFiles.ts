@@ -46,7 +46,11 @@ export function getVideoFileInfo(filePath: string) {
         fileName: path.basename(filePath),
         filePath,  // 文件的绝对路径
         fileSize: fileSize,  // 文件大小（字节）
-        resolution: videoStream ? `${videoStream.width}x${videoStream.height}` : 'unknown',
+        resolution: {
+          isValid: !!videoStream,
+          width: videoStream?.width || 0, 
+          height: videoStream?.height || 0,
+        },
         mediaType: mimeType,  // <source> 标签中的 "type" (MIME 类型)
         audioTracks: audioStreams.map(audio => ({
           codec: audio.codec_name,
@@ -62,46 +66,6 @@ export function getVideoFileInfo(filePath: string) {
       return resolve(fileInfo);
     });
   });
-}
-
-const getVideoFiles = async(dir: string) => {
-  const structure = {};
-  
-  const files = await fs.readdir(dir);
-
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stat = await fs.stat(fullPath);
-    
-    if (stat.isDirectory()) {
-      structure[file] = await getVideoFiles(fullPath);  // 递归处理子目录
-    } else if (videoExtensions.test(file)) {
-      const fileInfo = await getVideoFileInfo(fullPath);  // 获取视频文件详细信息
-      structure[file] = fileInfo;
-    }
-  }
-  
-  return structure;
-};
-
-export interface TinyFileItem {
-  fileName: string;
-  filePath: string;
-  fileSize: number;
-  mimeType: VideoMimeType;
-}
-
-export type VideoFileSummaryInfoListItem = TinyFileItem | TinyDirItem;
-export type VideoFileSummaryInfoList = Array<TinyFileItem | TinyDirItem>;
-
-export interface TinyDirItem {
-  directory: string;
-  directoryPath: string;
-  files: VideoFileSummaryInfoList;
-}
-
-export function isTinyDirItem(item: VideoFileSummaryInfoListItem): item is TinyDirItem {
-  return Object.keys(item as TinyDirItem).includes('directory');
 }
 
 // 递归获取目录中的视频文件
@@ -133,13 +97,11 @@ export function getVideoFilesTinyTree(dir: string) {
         fileName: file,
         mimeType: getMimeTypeMediaPath(fullPath),
         filePath: fullPath,
-        fileSize: stats.size // 文件大小（字节）
+        fileSize: stats.size, // 文件大小（字节）
+        detail: void(0),
       });
     }
   }
 
   return tree;
 }
-
-
-export default getVideoFiles;

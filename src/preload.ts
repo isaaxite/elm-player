@@ -19,6 +19,9 @@ function ipcRendererHandlerFactory(eventNmae: string) {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getLocalFiles: (directory: string): Promise<FileList[]> => ipcRenderer.invoke('get-local-files', directory),
+  getMediaDetail: (mediaFilepath: string) => {
+    return ipcRenderer.invoke('get-media-file-detail', mediaFilepath);
+  },
   onPrevMedia: (handler: () => void) => {
     return ipcRenderer.on('prev-media', (e, command) => {
       handler();
@@ -46,5 +49,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.on(IELECTRON_EVENT_TYPES.audio, (e, type) => {
       handler(type);
     });
+  },
+  updateWindowSize: (width: number, height: number) => {
+    return ipcRenderer.invoke('update-window-size', { width, height });
   }
 });

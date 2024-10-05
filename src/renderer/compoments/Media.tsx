@@ -4,7 +4,7 @@ import VideoJS from './VideoJS';
 import { VideoJsPlayer } from 'video.js';
 import { useMediaStore, usePlayListStore } from '../store';
 import Playlist from './Playlist';
-import { AudioMenuType, PlaybackType, VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
+import { AudioMenuType, MediaFileDetail, PlaybackType, VideoFileSummaryInfoTreeDirNode, VideoFileTreeSummaryInfoFileNode } from '../../types';
 
 import './Media.scss';
 import 'videojs-font/css/videojs-icons.css'
@@ -13,15 +13,11 @@ import 'videojs-font/css/videojs-icons.css'
 const Media  = () => {
   const playerRef: React.MutableRefObject<VideoJsPlayer | null> = React.useRef(null);
   const {
-    selectedIdx,
-    activePlaylist,
     rootDir,
-    playlist,
     togglePlaylist,
     setShowPlaylist,
     setSelectedIdx,
-    setSelectedIdxBackward,
-    setHighlightIdxForward,
+    updateFileItemDetailBy,
   } = usePlayListStore(s => s);
   const setPlayer = useMediaStore(s => s.setPlayer);
 
@@ -29,12 +25,6 @@ const Media  = () => {
     autoplay: true,
     controls: true,
     responsive: true,
-    // controlBar: {
-    //   skipButtons: {
-    //     forward: 5,
-    //     backward: 5
-    //   }
-    // },
     disablePictureInPicture: true,
     experimentalSvgIcons: true,
     preferFullWindow: true,
@@ -114,26 +104,50 @@ const Media  = () => {
     });
   }, []);
 
-  const handleKeyupSwitchMidea = () => {}
   const handleDoubleClickDirItem = (
     playerCuttent: VideoJsPlayer,
     dirItem: VideoFileSummaryInfoTreeDirNode
   ) => {
     console.info({dirItem})
   };
-  const handleDoubleClickFileItem = (
+
+  const updateFileItemDetail = async (idx: number, fileItem: VideoFileTreeSummaryInfoFileNode) => {
+    let detail = fileItem.detail;
+    if (!detail) {
+      try {
+        detail = await window.electronAPI.getMediaDetail(fileItem.filePath);
+        updateFileItemDetailBy(idx, detail);
+      } catch (error) {
+        console.error('electronAPI.getMediaDetail:', error);
+      }
+    }
+    return detail;
+  };
+  const handleDoubleClickFileItem = async (
     playerCuttent: VideoJsPlayer,
-    fileItem: VideoFileTreeSummaryInfoFileNode
+    fileItem: VideoFileTreeSummaryInfoFileNode,
+    idx: number,
   ) => {
-    if (playerCuttent.currentSrc()) {
-      playerCuttent.pause();
-      playerCuttent.reset();
+
+    const detail = await updateFileItemDetail(idx, fileItem);
+
+    if (detail && detail.resolution.isValid) {
+      window.electronAPI.updateWindowSize(detail.resolution.width, detail.resolution.height);
     }
 
-    playerCuttent.src({
-      src: fileItem.filePath,
-      type: fileItem.mimeType
-    });
+    try {
+      if (playerCuttent.currentSrc()) {
+        playerCuttent.pause();
+        playerCuttent.reset();
+      }
+  
+      playerCuttent.src({
+        src: fileItem.filePath,
+        type: fileItem.mimeType
+      }); 
+    } catch (error) {
+      console.error('play err:', error);
+    }
   };
 
   const appendPlaylistWraper = (playerCuttent: VideoJsPlayer) => {
@@ -150,7 +164,7 @@ const Media  = () => {
     setShowPlaylist();
     createRoot(document.getElementById(playlistWraper.id) as HTMLDivElement).render(
       <Playlist
-        onDoubleClickFileItem={({ fileItem }) => handleDoubleClickFileItem(playerCuttent, fileItem)}
+        onDoubleClickFileItem={({ fileItem , idx}) => handleDoubleClickFileItem(playerCuttent, fileItem, idx)}
         onDoubleClickDirItem={({ dirItem }) => handleDoubleClickDirItem(playerCuttent, dirItem)}
       />
     );
@@ -187,8 +201,6 @@ const Media  = () => {
       });
     };
 
-
-
     appendControlBarBtn({
       classList: ['elm-control-bar__playlist-btn', 'vjs-icon-chapters'],
       clickHandler: () => {
@@ -207,7 +219,8 @@ const Media  = () => {
           return console.warn(`currentFileItemIdx = ${currentFileItemIdx}`);
         }
         s.setSelectedIdx(s.selectedIdx - 1);
-        handleDoubleClickFileItem(player, s.activePlaylist.files[currentFileItemIdx - 1]);
+        const idx = currentFileItemIdx - 1;
+        handleDoubleClickFileItem(player, s.activePlaylist.files[idx], idx);
       }
     });
 
@@ -220,7 +233,8 @@ const Media  = () => {
         if (currentFileItemIdx >= s.activePlaylist.files.length - 1) {
           return console.warn(`currentFileItemIdx = ${currentFileItemIdx}, maxIdx = ${s.activePlaylist.files.length - 1}`);
         }
-        handleDoubleClickFileItem(player, s.activePlaylist.files[currentFileItemIdx + 1]);
+        const idx = currentFileItemIdx + 1;
+        handleDoubleClickFileItem(player, s.activePlaylist.files[idx], idx);
         s.setSelectedIdx(s.selectedIdx + 1);
       }
     });

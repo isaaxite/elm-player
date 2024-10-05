@@ -48,6 +48,9 @@ const Playlist = (props: PlaylistProps) => {
     updateActivePlayList,
     setHighlightIdxForward,
     setHighlightIdxBackward,
+    pushDirPath,
+    popDirPath,
+    updateFileItemDetailBy,
   } = usePlayListStore(s => s);
 
   const isShowPreDirBtn = useMemo(() => activePlaylist.fullpath !== rootPlaylist.fullpath, [
@@ -69,14 +72,16 @@ const Playlist = (props: PlaylistProps) => {
   ) => {
     setSelectedIdx(-1);
     updateActivePlayList(dirItem);
+    pushDirPath(idx);
     onDoubleClickDirItem && onDoubleClickDirItem({ dirItem, idx });
   };
-  const fileItemDoubleClickHandler = (
+
+  const fileItemDoubleClickHandler = async (
     fileItem: VideoFileTreeSummaryInfoFileNode,
     idx: number
   ) => {
-    onDoubleClickFileItem && onDoubleClickFileItem({ fileItem, idx });
     setSelectedIdx(idx);
+    onDoubleClickFileItem && onDoubleClickFileItem({ fileItem, idx });
   };
 
   useEffect(() => {
@@ -137,7 +142,8 @@ const Playlist = (props: PlaylistProps) => {
       const newIdx = type === 'PREV' 
         ? ranger.getPrevIdxBy(state.selectedIdx)
         : ranger.getNextIdxBy(state.selectedIdx);
-      const newFileItem = state.activePlaylist.files[newIdx % state.activePlaylist.directories.length];
+      const newFileItem = state.activePlaylist.files[newIdx - state.activePlaylist.directories.length];
+      console.info(333, newFileItem, newIdx);
       fileItemDoubleClickHandler(newFileItem, newIdx);
     };
 
@@ -196,6 +202,7 @@ const Playlist = (props: PlaylistProps) => {
   }, [showPlaylist]);
 
   const prevDirBtnClickHandler = () => {
+    popDirPath();
     updateActivePlayList(activePlaylist.parentRef!);
   };
 

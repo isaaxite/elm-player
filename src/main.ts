@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path"
 import { app, BrowserWindow, ipcMain } from "electron";
 import { FileList } from "./types";
-import { getVideoFilesTinyTree } from "./utils/readLocalMediaFiles";
+import { getVideoFileInfo, getVideoFilesTinyTree } from "./utils/readLocalMediaFiles";
 import { setApplicationMenu } from "./menu";
 
 function getLocalFiles(directory: string): Promise<FileList[]> {
@@ -24,8 +24,9 @@ function getLocalFiles(directory: string): Promise<FileList[]> {
   });
 }
 
+let win: BrowserWindow;
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
     width: 800,
@@ -62,8 +63,17 @@ const createWindow = () => {
     }
   });
 
+
+  ipcMain.handle('update-window-size', (e, { width, height }) => {
+    win.setSize(width, height);
+  });
+
   ipcMain.handle('get-video-file-tiny-tree', async (e, directory) => {
     return getVideoFilesTinyTree(directory);
+  });
+
+  ipcMain.handle('get-media-file-detail', async (e, mediaFilepath) => {
+    return getVideoFileInfo(mediaFilepath);
   });
 };
 
